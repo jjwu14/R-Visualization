@@ -9,7 +9,7 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-![](/Users/roywu/Documents/Data Science/R/Projects/R-Visualization/hotel image.png){width=50%}
+
 
 #### 1. About the Dataset
 The dataset used in this exploratory data analysis comes from the [Hotel Booking Demand](https://www.kaggle.com/jessemostipak/hotel-booking-demand) dataset on Kaggle. The purpose of this project is to utilize packages in tidyverse (dplyr and ggplot2) to manipulate and visualize data. 
