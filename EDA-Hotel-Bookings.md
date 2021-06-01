@@ -5,7 +5,7 @@ Roy Wu
 
 
 
-#### 1\. About the Datasetz
+#### 1\. About the Dataset
 
 The dataset used in this exploratory data analysis comes from the [Hotel
 Booking
