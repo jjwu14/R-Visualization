@@ -1,0 +1,197 @@
+---
+title: "Exploratory Hotel Analysis - Hotel Bookings"
+author: "Roy Wu"
+date: "11/05/2021"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+![](/Users/roywu/Documents/Data Science/R/Projects/R-Visualization/hotel image.png){width=50%}
+
+#### 1. About the Dataset
+The dataset used in this exploratory data analysis comes from the [Hotel Booking Demand](https://www.kaggle.com/jessemostipak/hotel-booking-demand) dataset on Kaggle. The purpose of this project is to utilize packages in tidyverse (dplyr and ggplot2) to manipulate and visualize data. 
+
+
+```{r import, echo=T, message=FALSE}
+library(tidyverse)
+hotel <- read.csv("hotel_bookings.csv")
+```
+  
+  
+#### 2. Data Observation
+The first step is to understand the variables in the dataset. Through the preliminary observation of the dataset, it can be identified that a majority of the variables are string/character types. It would be helpful to convert these variables to categorical variables. This step is crucial for further data analysis.
+      
+```{r}
+class(hotel)
+str(hotel)
+```
+
+```{r}
+hotel <- mutate_if(hotel, is.character, as.factor)
+str(hotel)
+summary(hotel)
+```
+
+#### 3. Data Cleaning
+This step helps to improve data quality. By summarizing the entire dataset, we see some variables contain missing values and “noisy” data that might be outliers. For example, outliers include 55 adults and 10 babies for each reservation. The goal of this step is to smooth the dataset and resolve inconsistencies.    
+
+The following data cleaning approaches were executed in this step:  
+
+* Assigning missing values for the number of children to 0
+* Assigning missing values for meal type to “SC” (self-catering: no meals are included)
+* Subsetting a data frame that retains all rows where the number of babies is equal or less than 2, the number of adults is equal or less than 4, and distribution channel that is not unidentified
+
+
+
+```{r}
+summary(hotel$adults)
+summary(hotel$children)
+summary(hotel$babies)
+summary(hotel$meal)
+
+hotel$children[is.na(hotel$children)] <- 0
+hotel$meal[hotel$meal == 'Undefined'] <- "SC"
+
+hotel <- filter(hotel, babies <= 2 & adults <= 4 & distribution_channel != "Undefined")
+
+
+```
+
+#### 4. Data Visualization 
+The final and most exciting step — data visualization. This step analyzes relationships between variables and provides insights into patterns and trends.  
+
+**(1).What are the hotel types and how many of each type are there?**  
+There are two hotel types in this dataset: City Hotel and Resort Hotel. The number of reservation cancellations for city hotels is almost twice as much as that of resort hotels.
+
+```{r}
+ggplot(data = hotel) +
+  geom_bar(aes(hotel, fill = hotel),width = 0.7) +
+  xlab("Hotel Type") +
+  ylab("Number of Hotels") +
+  scale_fill_discrete(name = "Hotel Type ")+
+  theme_classic()
+```
+
+
+
+
+**(2).What is the cancellation status for each hotel type?**  
+The amount of cancellation for city hotels is considerably higher compared to that of resort hotels. This could be attributed to several reasons: 
+
+* Resort bookings are often bundled with flight bookings and/or car rentals in holiday packages, resulting in less flexibility in terms of reservation modification. 
+* Resorts hotels have stricter cancellation policies 
+  * Guests staying at city hotels are usually business travellers, transient travellers and “steamliners” who are often on-the-move. These types of travellers usually do not need much time to book in advance; they seek convenience and flexibility with their reservations.  
+  * In contrast, since resort hotels are at tourist destinations, guests usually book in advance according to their travel plans. This gives them less freedom in modifying their reservations.  
+
+
+
+
+```{r}
+notcancelled <- filter(hotel, is_canceled == 0)
+
+meanadr <- mean(notcancelled$adr)
+meanadr
+
+prop.table(table(hotel$is_canceled, hotel$hotel))
+ggplot(data = hotel,
+       aes(hotel, prop.table(stat(count)),
+         fill = factor(is_canceled),
+         label = scales::percent(prop.table(stat(count)))
+       )) +
+  geom_bar(position = position_dodge())+
+  geom_text(stat = 'count',
+            position = position_dodge(.9), 
+              vjust = -0.5, 
+              size = 2) + 
+  scale_y_continuous(labels = scales::percent) +
+  xlab("Hotel Type") +
+  ylab("Percentage") +
+  scale_fill_discrete(name = "Cancellation Status", 
+                      labels = c("Not Cancelled","Cancelled")) +
+  labs(title = "Hotel Type & Cancellation Status") +
+  theme_classic()
+```
+
+
+
+**(3).What is the ADR (Average Daily Rate) among different room types?**  
+The box plot illustrates the ADR across all room types in city hotels and resort hotels. The data only includes reservations that are not cancelled. As the ADR varies significantly in the dataset, the ADR axis is logarithmic-transformed into log10 scale for better readability.   
+
+The grey line crossing the graph indicates the mean value of ADR for reservations that are not cancelled.
+
+```{r, warning=FALSE, message=FALSE}
+ggplot(data = notcancelled,
+       aes(x=assigned_room_type, adr, fill = hotel)) +
+  geom_boxplot(size=0.5)+
+  scale_y_log10()+
+  theme_classic()+
+  scale_fill_discrete (name = "Hotel Type") +
+  geom_hline(yintercept = meanadr, color = "darkgrey", linetype =1 )+
+  xlab("Assigned Room Type") +
+  ylab("Average Daily Rate")+
+  labs(title = "Average Daily Rate Across All Room Types") +
+  annotate("label", label = "Mean ADR", x = 9.5, y = meanadr + 50, size = 4, colour = "red") +
+  coord_flip() +
+  ylim(0,500)
+
+```
+
+
+**(4).What is the ADR (Average Daily Rate) among different distribution channels?**  
+The density plot above represents the distribution of ADR by distribution channel. It is observed that all distribution channels tend to have an ADR close to $100 in local currency.
+
+
+```{r}
+ggplot(notcancelled, aes(adr, color = distribution_channel))+
+  geom_density(size=0.7) +
+  theme_classic() +
+  xlab("Average Daily Rate")+
+  ylab("Density") +
+  labs(title = "Average Daily Rate By Distribution Channel")+
+  scale_color_discrete(name = "Distribution Channel")
+  
+```
+
+
+**(5).What booking channels are reservations booked from?**  
+Bar graphs above show that out of corporate, direct booking, GDB (Global distribution system), and Travel Agents/Tour Operators (TA/TO), the book channel that is utilized the most for hotels bookings is through Travel Agents/Tour Operators for both city hotels and resort hotels. 
+
+
+
+```{r}
+ggplot(hotel, aes(x = distribution_channel, fill = distribution_channel))+
+  geom_bar()+
+  facet_wrap(~hotel) +
+  theme_classic() +
+  ylab("Number of Bookins")+
+  xlab("Distribution Channel")+
+  scale_fill_discrete (name = "Distribution Channel")+
+  labs(title = "Booking Channels For Each Hotel Type") 
+  
+  
+```
+
+
+**(6).What type of guest represent most hotel bookings?**  
+It is observed that about 75% of bookings are from transient-party guests.
+```{r, warning=FALSE, message=FALSE}
+customerdata <- hotel %>%
+  dplyr::select(customer_type) %>%
+  group_by(customer_type) %>%
+  summarize(n = n()) 
+
+ggplot(customerdata, aes(x = "", y = n, fill = customer_type)) +
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y", start = 0) +
+  theme_void() +
+  scale_fill_discrete (name = "Customer Type")+
+  labs(title = "Percentage of Bookings by Customer Type") 
+
+```
+```{r}
+
+```
+
