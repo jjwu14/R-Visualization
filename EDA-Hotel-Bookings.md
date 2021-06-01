@@ -3,7 +3,7 @@ EDA-Hotel Bookings
 Roy Wu
 11/05/2021
 
-![](/Users/roywu/Documents/Data%20Science/R/Projects/R-Visualization/hotel%20image.png)
+![](/Users/roywu/Documents/Data Science/R/Projects/R-Visualization/hotel image.png){width=50%}
 
 #### 1\. About the Dataset
 
