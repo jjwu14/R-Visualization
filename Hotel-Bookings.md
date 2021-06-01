@@ -3,8 +3,8 @@ Exploratory Hotel Analysis - Hotel Bookings
 Roy Wu
 11/05/2021
 
-![](/Users/roywu/Documents/Data%20Science/R/Projects/R-Visualization/hotel%20image.png)
-#### 1\. About the Dataset. 
+![](/Users/roywu/Documents/Data Science/R/Projects/R-Visualization/hotel image.png){width=50%}
+
 #### 1\. About the Dataset
 
 The dataset used in this exploratory data analysis comes from the [Hotel
