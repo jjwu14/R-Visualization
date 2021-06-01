@@ -3,7 +3,7 @@ EDA-Hotel Bookings
 Roy Wu
 11/05/2021
 
-![](https://unsplash.com/photos/n_IKQDCyrG0){width=50%}
+
 
 #### 1\. About the Datasetz
 
