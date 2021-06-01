@@ -3,10 +3,9 @@ EDA-Hotel Bookings
 Roy Wu
 11/05/2021
 
-![](https://www.google.com/url?sa=i&url=https%3A%2F%2Funsplash.com%2Fs%2Fphotos%2Fhotel&psig=AOvVaw0N3degEaF-EBIFtEkjhfPP&ust=1622608897123000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCNDsq6nP9fACFQAAAAAdAAAAABAD![image](https://user-images.githubusercontent.com/69171988/120267567-10859580-c259-11eb-890a-731d5e2d4f86.png)
-){width=50%}
+![](https://www.google.com/url?sa=i&url=https%3A%2F%2Funsplash.com%2Fs%2Fphotos%2Fhotel&psig=AOvVaw0N3degEaF-EBIFtEkjhfPP&ust=1622608897123000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCNDsq6nP9fACFQAAAAAdAAAAABAD![image](https://user-images.githubusercontent.com/69171988/120267567-10859580-c259-11eb-890a-731d5e2d4f86.png){width=50%}
 
-#### 1\. About the Dataset
+#### 1\. About the Datasetz
 
 The dataset used in this exploratory data analysis comes from the [Hotel
 Booking
